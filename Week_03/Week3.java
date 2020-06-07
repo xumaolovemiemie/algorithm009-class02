@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Week3 {
     public static void main(String[] args) {
@@ -115,80 +112,169 @@ public class Week3 {
         return list;
     }
 
-    private static void recursion46(List<List<Integer>> list,int[] nums,ArrayList<Integer> tmp, int[] visited) {
-        if (left == max && right == max) {
-            list.add(str);
+    private static void recursion46(List<List<Integer>> list, int[] nums, ArrayList<Integer> tmp, int[] visited) {
+        if (tmp.size() == nums.length) {
+            list.add(new ArrayList<>(tmp));
             return;
         }
-
         for (int i = 0; i < nums.length; i++) {
-            recursion46(list, left, right + 1, max, str + ")");
+            if (visited[i] == 1) {
+                continue;
+            }
+            visited[i] = 1;
+            tmp.add(nums[i]);
+            recursion46(list, nums, tmp, visited);
+            visited[i] = 0;
+            tmp.remove(tmp.size() - 1);
         }
     }
-//
-//    /**
-//     * 47. 全排列 II
-//     *
-//     * 给定一个可包含重复数字的序列，返回所有不重复的全排列。
-//     */
-//    public List<List<Integer>> permuteUnique(int[] nums) {
-//
-//    }
-//
-//    /**
-//     * 50. Pow(x, n)
-//     *
-//     * 实现 pow(x, n) ，即计算 x 的 n 次幂函数。
-//     */
-//    public double myPow(double x, int n) {
-//
-//    }
-//
-//    /**
-//     * 51. N皇后
-//     *
-//     * n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
-//     *
-//     * 给定一个整数 n，返回所有不同的 n 皇后问题的解决方案。
-//     *
-//     * 每一种解法包含一个明确的 n 皇后问题的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。
-//     */
-//    public List<List<String>> solveNQueens(int n) {
-//
-//    }
-//
-//    /**
-//     * 70. 爬楼梯
-//     * <p>
-//     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
-//     * <p>
-//     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
-//     * <p>
-//     * 注意：给定 n 是一个正整数。
-//     */
-//    public static int climbStairs(int n) {
-//        if (n <= 2) {
-//            return n;
-//        }
-//        int num = 0;
-//        int num1 = 2;
-//        int num2 = 1;
-//        for (int i = 3; i <= n; i++) {
-//            num = num1 + num2;
-//            num2 = num1;
-//            num1 = num;
-//        }
-//        return num;
-//    }
-//
-//    /**
-//     * 77. 组合
-//     * <p>
-//     * 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
-//     */
-//    public List<List<Integer>> combine(int n, int k) {
-//
-//    }
+
+    /**
+     * 47. 全排列 II
+     * <p>
+     * 给定一个可包含重复数字的序列，返回所有不重复的全排列。
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> list = new ArrayList<>();
+        int[] visited = new int[nums.length];
+        recursion47(list, nums, new ArrayList<Integer>(), visited);
+        return list;
+    }
+
+    private static void recursion47(List<List<Integer>> list, int[] nums, ArrayList<Integer> tmp, int[] visited) {
+        if (tmp.size() == nums.length) {
+            list.add(new ArrayList<>(tmp));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1] && visited[i - 1] == 0) {
+                continue;
+            }
+            if (visited[i] == 1) {
+                continue;
+            }
+            visited[i] = 1;
+            tmp.add(nums[i]);
+            recursion47(list, nums, tmp, visited);
+            visited[i] = 0;
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 50. Pow(x, n)
+     * <p>
+     * 实现 pow(x, n) ，即计算 x 的 n 次幂函数。
+     * <p>
+     * 说明:
+     * <p>
+     * -100.0 < x < 100.0
+     * <p>
+     * n 是 32 位有符号整数，其数值范围是 [−231, 231 − 1] 。
+     */
+    public double myPow(double x, int n) {
+        if (n == 0 && x != 0) {
+            return 1;
+        }
+        if (n > 0) {
+            return recursion50(x, n);
+        } else {
+            return 1 / recursion50(x, -n);
+        }
+    }
+
+    private double recursion50(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        double res = recursion50(x, n / 2);
+        if (n % 2 == 0) {
+            return res * res;
+        } else {
+            return res * res * x;
+        }
+    }
+
+    /**
+     * 51. N皇后
+     * <p>
+     * n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
+     * <p>
+     * 给定一个整数 n，返回所有不同的 n 皇后问题的解决方案。
+     * <p>
+     * 每一种解法包含一个明确的 n 皇后问题的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。
+     * <p>
+     * 提示：
+     * <p>
+     * 皇后，是国际象棋中的棋子，意味着国王的妻子。皇后只做一件事，那就是“吃子”。当她遇见可以吃的棋子时，就迅速冲上去吃掉棋子。当然，她横、竖、斜都可走一到七步，可进可退。（引用自 百度百科 - 皇后 ）
+     */
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> list = new ArrayList<>();
+        boolean[][] place = new boolean[n][n];
+        recursion51(list, 0, 0, n, place);
+        return list;
+    }
+
+    private void recursion51(List<List<String>> list, int level, int index, int max, boolean[][] place) {
+        // TODO: 2020/6/7 实现有问题
+        if (level == max || index == max) {
+            return;
+        }
+        if (list.size() == level) {
+            list.add(new ArrayList<>());
+        }
+        for (int i = 0; i < max; i++) {
+            recursion51(list, level, i, max, place);
+        }
+        recursion51(list, level + 1, 0, max, place);
+    }
+
+    /**
+     * 70. 爬楼梯
+     * <p>
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * <p>
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * <p>
+     * 注意：给定 n 是一个正整数。
+     */
+    public static int climbStairs(int n) {
+        if (n <= 2) {
+            return n;
+        }
+        int num = 0;
+        int num1 = 2;
+        int num2 = 1;
+        for (int i = 3; i <= n; i++) {
+            num = num1 + num2;
+            num2 = num1;
+            num1 = num;
+        }
+        return num;
+    }
+
+    /**
+     * 77. 组合
+     * <p>
+     * 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        recursion77(res, 1, new LinkedList<>(), n, k);
+        return res;
+    }
+
+    public void recursion77(List<List<Integer>> res, int first, LinkedList<Integer> list, int n, int k) {
+        if (list.size() == k) {
+            res.add(new ArrayList<>(list));
+        }
+        for (int i = first; i < n + 1; ++i) {
+            list.add(i);
+            recursion77(res, i + 1, list, n, k);
+            list.removeLast();
+        }
+    }
 //
 //    /**
 //     * 78. 子集
@@ -237,18 +323,41 @@ public class Week3 {
 //    public int maxDepth(TreeNode root) {
 //
 //    }
-//
-//    /**
-//     * 105. 从前序与中序遍历序列构造二叉树
-//     * <p>
-//     * 根据一棵树的前序遍历与中序遍历构造二叉树。
-//     * <p>
-//     * 注意:你可以假设树中没有重复的元素。
-//     */
-//    public TreeNode buildTree(int[] preorder, int[] inorder) {
-//
-//    }
-//
+
+    /**
+     * 105. 从前序与中序遍历序列构造二叉树
+     * <p>
+     * 根据一棵树的前序遍历与中序遍历构造二叉树。
+     * <p>
+     * 注意:你可以假设树中没有重复的元素。
+     */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return buildTreeHelper(preorder, inorder, (long) Integer.MAX_VALUE + 1);
+    }
+
+    int pre = 0;
+    int in = 0;
+
+    private TreeNode buildTreeHelper(int[] preorder, int[] inorder, long stop) {
+        //到达末尾返回 null
+        if (pre == preorder.length) {
+            return null;
+        }
+        //到达停止点返回 null
+        //当前停止点已经用了，in 后移
+        if (inorder[in] == stop) {
+            in++;
+            return null;
+        }
+        int root_val = preorder[pre++];
+        TreeNode root = new TreeNode(root_val);
+        //左子树的停止点是当前的根节点
+        root.left = buildTreeHelper(preorder, inorder, root_val);
+        //右子树的停止点是当前树的停止点
+        root.right = buildTreeHelper(preorder, inorder, stop);
+        return root;
+    }
+
 //    /**
 //     * 111. 二叉树的最小深度
 //     * <p>
